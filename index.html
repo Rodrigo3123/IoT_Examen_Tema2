@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - IoT Car</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>Panel de Control</strong></li>
+        </ul>
+        <ul>
+            <li><a href="index.html" class="secondary" aria-current="page">Control</a></li>
+            <li><a href="monitor.html" class="secondary">Monitoreo</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <div class="dashboard-grid">
+
+            <!-- PANEL PRINCIPAL -->
+            <section id="main-controls">
+
+                <article class="card">
+                    <header><h3>Controles de Movimiento</h3></header>
+
+                    <div class="grid" style="--grid-cols: 4;">
+                        <button class="control-button" data-op-id="5">↖<br>Vuelta Ad.</button>
+                        <button class="control-button" data-op-id="1">↑<br>Adelante</button>
+                        <button class="control-button" data-op-id="4">↗<br>Vuelta Ad.</button>
+                        <button class="control-button stop-button" data-op-id="3">🛑<br>Detener</button>
+
+                        <button class="control-button" data-op-id="9">↶<br>Giro 90°</button>
+                        <button class="control-button" data-op-id="2">↓<br>Atrás</button>
+                        <button class="control-button" data-op-id="8">↷<br>Giro 90°</button>
+                        <button class="control-button" data-op-id="7">↶<br>Vuelta Atrás</button>
+
+                        <button class="control-button" data-op-id="11">↶<br>Giro 360°</button>
+                        <button class="control-button" data-op-id="10">↷<br>Giro 360°</button>
+                        <button class="control-button" data-op-id="6">↷<br>Vuelta Atrás</button>
+                    </div>
+
+                    <footer id="movement-status">Estado: Listo</footer>
+                </article>
+
+                <article class="card">
+                    <header><h3>Ejecutar Secuencias DEMO</h3></header>
+                    <label for="demo-select">Seleccionar DEMO:</label>
+                    <select id="demo-select" aria-busy="true">
+                        <option value="">Cargando demos...</option>
+                    </select>
+                    <button id="run-demo-btn">Ejecutar DEMO</button>
+                    <footer id="demo-status">Estado: Listo</footer>
+                </article>
+
+                <details>
+                    <summary role="button" class="contrast" id="cta-crear-demo">Crear Nueva Secuencia DEMO</summary>
+                    <form id="create-demo-form" class="card">
+                        <label for="demo-nombre">Nombre de la Demo:</label>
+                        <input type="text" id="demo-nombre" placeholder="Ej: Recorrido de prueba" required>
+
+                        <label for="demo-secuencia">Secuencia de Movimientos:</label>
+                        <input type="text" id="demo-secuencia" placeholder="Ej: 1,8,1,9,3" required>
+                        <small>Escribe los IDs de operación separados por comas.</small>
+
+                        <button type="submit">Crear Demo</button>
+                    </form>
+                </details>
+
+                <article class="card">
+                    <header><h6>Referencia de Movimientos</h6></header>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>ID</th><th>Movimiento</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>1</strong></td><td>Adelante</td></tr>
+                                <tr><td><strong>2</strong></td><td>Atrás</td></tr>
+                                <tr><td><strong>3</strong></td><td>Detener</td></tr>
+                                <tr><td><strong>4</strong></td><td>Vuelta adelante D.</td></tr>
+                                <tr><td><strong>5</strong></td><td>Vuelta adelante I.</td></tr>
+                                <tr><td><strong>6</strong></td><td>Vuelta atrás D.</td></tr>
+                                <tr><td><strong>7</strong></td><td>Vuelta atrás I.</td></tr>
+                                <tr><td><strong>8</strong></td><td>Giro 90° D.</td></tr>
+                                <tr><td><strong>9</strong></td><td>Giro 90° I.</td></tr>
+                                <tr><td><strong>10</strong></td><td>Giro 360° D.</td></tr>
+                                <tr><td><strong>11</strong></td><td>Giro 360° I.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- SIDEBAR -->
+            <section id="sidebar">
+
+                <article class="card">
+                    <header><h3>Dispositivo Activo</h3></header>
+                    <label for="device-id">ID del Dispositivo a Controlar:</label>
+                    <input type="number" id="device-id-input" value="1" min="1">
+                    <small>Este ID se usará para todas las acciones.</small>
+                </article>
+
+                <details>
+                    <summary role="button" class="outline" id="cta-registrar">Registrar Nuevo Dispositivo</summary>
+                    <form id="register-form" class="card">
+                        <input type="text" id="reg-nombre" placeholder="Nombre (ej: Carro_Beta)" required>
+                        <input type="text" id="reg-ip" placeholder="IP (ej: 192.168.1.102)">
+                        <input type="text" id="reg-pais" placeholder="País (ej: México)">
+                        <input type="text" id="reg-ciudad" placeholder="Ciudad (ej: CDMX)">
+                        <button type="submit">Registrar</button>
+                    </form>
+                </details>
+
+                <article class="card">
+                    <header><h3>Simular Obstáculo</h3></header>
+                    <div class="grid" style="--grid-cols: 3;">
+                        <button class="obstacle-button" data-obs-id="1">Adelante</button>
+                        <button class="obstacle-button" data-obs-id="2">Adelante-I</button>
+                        <button class="obstacle-button" data-obs-id="3">Adelante-D</button>
+                        <button class="obstacle-button" data-obs-id="4">Total</button>
+                        <button class="obstacle-button stop-button" data-obs-id="5">Retrocede</button>
+                    </div>
+                    <footer id="obstacle-status">Estado: Listo</footer>
+                </article>
+
+            </section>
+
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+    <script src="js/control.js" type="module"></script>
+</body>
+</html>

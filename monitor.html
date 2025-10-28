@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <title>Monitoreo - IoT Car</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="futuristic-bg">
+
+  <nav class="glass-nav">
+    <ul>
+      <li><strong>📡 Monitoreo IoT Car</strong></li>
+    </ul>
+    <ul>
+      <li><a href="index.html">Control</a></li>
+      <li><a href="monitor.html" class="active">Monitoreo</a></li>
+    </ul>
+  </nav>
+
+  <main class="container fade-in">
+    <div class="dashboard-grid">
+
+      <section id="main-logs">
+        <article class="card neon-card">
+          <header>
+            <h3>📍 Log de Movimientos</h3>
+            <small>Monitoreando ID: <span id="monitor-device-id" class="highlight">1</span></small>
+          </header>
+          <ul id="movement-log" class="log-list"> <li>Cargando historial...</li> </ul>
+        </article>
+
+        <article class="card neon-card">
+          <header><h3>⚠️ Log de Obstáculos</h3></header>
+          <ul id="obstacle-log" class="log-list"><li>Cargando historial...</li></ul>
+        </article>
+      </section>
+
+      <section id="sidebar">
+
+        <article class="card neon-card">
+          <header><h3>🎯 Filtro de Dispositivo</h3></header>
+          <form id="monitor-form">
+            <label for="monitor-device-input">ID del Dispositivo:</label>
+            <input type="number" id="monitor-device-input" min="1" required>
+            <button type="submit" id="load-monitor-btn" class="pulse-btn">Cargar Datos</button>
+          </form>
+        </article>
+
+        <article class="card neon-card">
+          <header><h3>📘 Referencia de Comandos</h3></header>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>ID</th><th>Movimiento</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Adelante</td></tr>
+                <tr><td>2</td><td>Atrás</td></tr>
+                <tr><td>3</td><td>Detener</td></tr>
+                <tr><td>4</td><td>Vuelta adelante D.</td></tr>
+                <tr><td>5</td><td>Vuelta adelante I.</td></tr>
+                <tr><td>6</td><td>Vuelta atrás D.</td></tr>
+                <tr><td>7</td><td>Vuelta atrás I.</td></tr>
+                <tr><td>8</td><td>Giro 90° D.</td></tr>
+                <tr><td>9</td><td>Giro 90° I.</td></tr>
+                <tr><td>10</td><td>Giro 360° D.</td></tr>
+                <tr><td>11</td><td>Giro 360° I.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card neon-card">
+          <header><h3>💡 Demos Disponibles</h3></header>
+          <ul id="demo-list" class="log-list" style="height:200px;">
+            <li aria-busy="true">Cargando demos...</li>
+          </ul>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+  <script src="js/monitor.js" type="module"></script>
+</body>
+</html>

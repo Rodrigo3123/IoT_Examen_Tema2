@@ -1,0 +1,125 @@
+:root {
+  --color-bg: #0b0c10;
+  --color-card: #1f2833;
+  --color-accent: #66fcf1;
+  --color-accent-dark: #45a29e;
+  --color-text: #c5c6c7;
+  --color-danger: #ff4757;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.5s ease;
+}
+
+/* Navbar */
+nav {
+  background: linear-gradient(90deg, #0b0c10 0%, #1f2833 100%);
+  border-bottom: 2px solid var(--color-accent);
+  padding: 0.8rem 2rem;
+  box-shadow: 0 0 10px var(--color-accent-dark);
+}
+
+/* Tarjetas principales */
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-accent-dark);
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(102, 252, 241, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 25px rgba(102, 252, 241, 0.4);
+}
+
+/* GRID principal */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Contenedor de botones de movimiento y obstáculos */
+#main-controls .grid,
+#sidebar .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+    justify-items: center;
+}
+
+/* Botones de control grandes */
+.control-button,
+.obstacle-button {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 1.2rem 0.5rem;
+    min-width: 90px;
+    min-height: 90px;
+    border-radius: 12px;
+    background: var(--color-accent-dark);
+    color: #000;
+    border: none;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.3;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-button:hover,
+.obstacle-button:hover {
+    background: var(--color-accent);
+    transform: scale(1.12);
+    box-shadow: 0 0 16px var(--color-accent);
+}
+
+/* Botón de detener más grande */
+.stop-button {
+    background: var(--color-danger);
+    color: #fff;
+}
+.stop-button:hover {
+    background: #ff6b81;
+    box-shadow: 0 0 16px #ff6b81;
+}
+
+/* Select y formularios */
+select, input, button {
+    border-radius: 10px !important;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+article, details, form {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Tabla de referencia */
+.table-container {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  #main-controls .grid,
+  #sidebar .grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+}
