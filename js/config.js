@@ -35,3 +35,4 @@ export const OBSTACLE_MAP = {
 
 };
 
+
