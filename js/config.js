@@ -5,8 +5,8 @@
 const EC2_PUBLIC_IP = '54.226.224.183'; // Ej: '34.207.118.99'
 
 // Asegúrate de que tu backend EC2 esté corriendo en el puerto 5500
-export const API_BASE_URL = `http://${EC2_PUBLIC_IP}:5500/api`;
-export const SOCKET_URL = `http://${EC2_PUBLIC_IP}:5500`;
+export const API_BASE_URL = 'https://micarrirobot.cc/api';
+export const SOCKET_URL = 'https://micarrirobot.cc';
 
 // --- NUEVOS MAPAS DE REFERENCIA ---
 
@@ -32,4 +32,5 @@ export const OBSTACLE_MAP = {
     3: 'Adelante-Derecha',
     4: 'Adelante-Izquierda-Derecha',
     5: 'Retrocede'
+
 };
