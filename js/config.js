@@ -2,7 +2,7 @@
 
 // 🔴 ¡IMPORTANTE! 🔴
 // Reemplaza esta IP con la IP pública de tu instancia EC2.
-const EC2_PUBLIC_IP = '54.226.224.183'; // Ej: '34.207.118.99'
+const EC2_PUBLIC_IP = '44.214.41.132'; // Ej: '34.207.118.99'
 
 // Asegúrate de que tu backend EC2 esté corriendo en el puerto 5500
 export const API_BASE_URL = 'https://micarrirobot.cc/api';
@@ -34,3 +34,4 @@ export const OBSTACLE_MAP = {
     5: 'Retrocede'
 
 };
+
