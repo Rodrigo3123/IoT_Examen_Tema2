@@ -1,10 +1,67 @@
 // js/control.js
 import * as api from './apiService.js';
-import * as socket from './socketService.js';
+import * as socket from './socketService.js'; // Lo mantenemos para los logs
 
-// --- NUEVA FUNCIÓN HELPER ---
-// Crea una promesa que se resuelve después de 'ms' milisegundos
+// --- FUNCIÓN DELAY ---
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// ===================================================================
+// INICIO: NUEVA SECCIÓN MQTT
+// ===================================================================
+console.log("Iniciando cliente MQTT...");
+// Generar un ID de cliente único para la web
+const clientID = "web-client-" + Math.random().toString(16).substr(2, 8);
+
+// Conectar al broker público de HiveMQ por WebSockets (puerto 8000)
+const mqttClient = new Paho.MQTT.Client("broker.hivemq.com", 8000, clientID);
+
+// Callback para conexión perdida
+mqttClient.onConnectionLost = (responseObject) => {
+  if (responseObject.errorCode !== 0) {
+    console.log("MQTT Conexión perdida:", responseObject.errorMessage);
+    // Intentar reconectar
+    mqttClient.connect({ onSuccess: onMqttConnect, useSSL: false });
+  }
+};
+
+// Callback para cuando llega un mensaje (para el monitor de obstáculos)
+mqttClient.onMessageArrived = (message) => {
+    console.log("MQTT Mensaje recibido:", message.payloadString);
+    if(message.destinationName === "micarrirobot/obstaculos") {
+        // Podríamos actualizar un estado visual aquí si quisiéramos
+    }
+};
+
+// Callback para conexión exitosa
+function onMqttConnect() {
+  console.log("MQTT Conectado a broker.hivemq.com!");
+  // Suscribirse al canal de obstáculos (para el monitor)
+  mqttClient.subscribe("micarrirobot/obstaculos");
+}
+
+// Conectar al broker
+mqttClient.connect({ 
+  onSuccess: onMqttConnect,
+  useSSL: false // Usamos WebSocket (puerto 8000), no WSS
+});
+
+// Función para ENVIAR comandos MQTT al carro
+function sendMqttCommand(operationId) {
+  if (!mqttClient.isConnected()) {
+    console.warn("MQTT no conectado, no se puede enviar comando.");
+    alert("No se pudo enviar el comando: MQTT no conectado. Refresca la página.");
+    return;
+  }
+  // El mensaje es solo el ID del movimiento
+  const message = new Paho.MQTT.Message(String(operationId));
+  message.destinationName = "micarrirobot/comandos"; // El canal que el carro escucha
+  mqttClient.send(message);
+  console.log(`Comando MQTT enviado: ${operationId}`);
+}
+// ===================================================================
+// FIN: NUEVA SECCIÓN MQTT
+// ===================================================================
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Selectores del DOM ---
@@ -16,8 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const demoStatus = document.getElementById('demo-status');
     const registerForm = document.getElementById('register-form');
     const createDemoForm = document.getElementById('create-demo-form');
-    
-    // --- NUEVOS Selectores ---
     const obstacleButtons = document.querySelectorAll('.obstacle-button');
     const obstacleStatus = document.getElementById('obstacle-status');
 
@@ -47,27 +102,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadDemos();
 
-    // --- Función para ejecutar secuencia ---
+    // --- Función para ejecutar secuencia (MODIFICADA) ---
     async function executeDemoSequence(devId, steps) {
-        // Deshabilitar botones para evitar clics múltiples
         runDemoBtn.disabled = true;
         runDemoBtn.setAttribute('aria-busy', 'true');
         
         for (const step of steps) {
             const stepName = step.nombre_operacion || `ID: ${step.id_operacion}`;
-            
-            // 1. Actualizar el estado en el UI
             demoStatus.textContent = `Paso ${step.numero_paso}/${steps.length}: ${stepName}`;
             movementStatus.textContent = `Ejecutando: ${stepName}`;
 
-            // 2. Registrar el movimiento en la base de datos (simula la ejecución)
+            // --- ¡CAMBIO AQUÍ! ---
+            // 1. Enviar comando instantáneo por MQTT
+            sendMqttCommand(step.id_operacion);
+            
+            // 2. Registrar el movimiento en la BD (para el log)
             await api.addMovement(devId, step.id_operacion);
             
             // 3. Esperar 1 segundo (1000ms)
             await delay(1000);
         }
         
-        // 4. Finalizar
         demoStatus.textContent = `Demo completada (${steps.length} pasos).`;
         movementStatus.textContent = 'Estado: Listo';
         runDemoBtn.disabled = false;
@@ -76,13 +131,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
 
-    // 1. Botones de Movimiento
+    // 1. Botones de Movimiento (MODIFICADO)
     movementButtons.forEach(button => {
         button.addEventListener('click', async () => {
             const opId = parseInt(button.dataset.opId);
             const devId = getDeviceId();
             movementStatus.textContent = `Enviando Op: ${opId}...`;
-            const result = await api.addMovement(devId, opId);
+            
+            // --- ¡CAMBIO AQUÍ! ---
+            // 1. Enviar comando instantáneo por MQTT
+            sendMqttCommand(opId);
+            
+            // 2. Registrar el movimiento en la BD (para el log)
+            const result = await api.addMovement(devId, opId); 
+            
             if (result) {
                 movementStatus.textContent = `Éxito: Movimiento ${opId} registrado.`;
             } else {
@@ -101,11 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         demoStatus.textContent = `Iniciando Demo ${demoId}...`;
         
-        // La API 'runDemo' registra el INICIO de la demo y devuelve los pasos
         const steps = await api.runDemo(devId, demoId); 
         
         if (steps && steps.length > 0) {
-            // Llamamos a la nueva función que ejecuta los pasos con delay
             await executeDemoSequence(devId, steps);
         } else {
             demoStatus.textContent = 'Error: No se pudieron obtener los pasos de la demo.';
@@ -150,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
             demoStatus.textContent = 'Demo creada. Actualizando lista...';
             createDemoForm.reset();
             
-            // Recarga la lista de demos en el dropdown
             await loadDemos(); 
             demoStatus.textContent = 'Estado: Listo';
         } else {
@@ -159,8 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // --- NUEVO Event Listener ---
-    // 5. Botones de Obstáculo
+    // 5. Botones de Obstáculo (Sin cambios, solo loguea)
     obstacleButtons.forEach(button => {
         button.addEventListener('click', async () => {
             const obsId = parseInt(button.dataset.obsId);
@@ -175,10 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Escuchar eventos PUSH ---
-    // Actualiza la lista de demos si alguien más crea una
+    // --- Escuchar eventos PUSH (del Socket.IO del Backend, para el log) ---
     socket.onNewDemo(() => {
-        console.log('Nueva demo detectada, recargando lista...');
+        console.log('Socket.IO: Nueva demo detectada, recargando lista...');
         loadDemos();
     });
 });
