@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - IoT Car</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -19,11 +20,11 @@
     </nav>
 
     <main class="container">
-        
         <div class="dashboard-grid">
 
+            <!-- PANEL PRINCIPAL -->
             <section id="main-controls">
-                
+
                 <article class="card">
                     <header><h3>Controles de Movimiento</h3></header>
 
@@ -32,11 +33,12 @@
                         <button class="control-button" data-op-id="1">↑<br>Adelante</button>
                         <button class="control-button" data-op-id="4">↗<br>Vuelta Ad.</button>
                         <button class="control-button stop-button" data-op-id="3">🛑<br>Detener</button>
-                        
+
                         <button class="control-button" data-op-id="9">↶<br>Giro 90°</button>
                         <button class="control-button" data-op-id="2">↓<br>Atrás</button>
                         <button class="control-button" data-op-id="8">↷<br>Giro 90°</button>
-                        <span></span> <button class="control-button" data-op-id="7">↶<br>Vuelta Atrás</button>
+                        <button class="control-button" data-op-id="7">↶<br>Vuelta Atrás</button>
+
                         <button class="control-button" data-op-id="11">↶<br>Giro 360°</button>
                         <button class="control-button" data-op-id="10">↷<br>Giro 360°</button>
                         <button class="control-button" data-op-id="6">↷<br>Vuelta Atrás</button>
@@ -54,17 +56,17 @@
                     <button id="run-demo-btn">Ejecutar DEMO</button>
                     <footer id="demo-status">Estado: Listo</footer>
                 </article>
-                
+
                 <details>
                     <summary role="button" class="contrast" id="cta-crear-demo">Crear Nueva Secuencia DEMO</summary>
                     <form id="create-demo-form" class="card">
                         <label for="demo-nombre">Nombre de la Demo:</label>
                         <input type="text" id="demo-nombre" placeholder="Ej: Recorrido de prueba" required>
-                        
+
                         <label for="demo-secuencia">Secuencia de Movimientos:</label>
                         <input type="text" id="demo-secuencia" placeholder="Ej: 1,8,1,9,3" required>
                         <small>Escribe los IDs de operación separados por comas.</small>
-                        
+
                         <button type="submit">Crear Demo</button>
                     </form>
                 </details>
@@ -95,17 +97,16 @@
 
             </section>
 
+            <!-- SIDEBAR -->
             <section id="sidebar">
 
                 <article class="card">
-                    <header>
-                        <h3>Dispositivo Activo</h3>
-                    </header>
+                    <header><h3>Dispositivo Activo</h3></header>
                     <label for="device-id">ID del Dispositivo a Controlar:</label>
                     <input type="number" id="device-id-input" value="1" min="1">
                     <small>Este ID se usará para todas las acciones.</small>
                 </article>
-                
+
                 <details>
                     <summary role="button" class="outline" id="cta-registrar">Registrar Nuevo Dispositivo</summary>
                     <form id="register-form" class="card">
@@ -130,13 +131,11 @@
                 </article>
 
             </section>
+
         </div>
     </main>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
-    
     <script src="js/control.js" type="module"></script>
 </body>
 </html>
