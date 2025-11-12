@@ -13,6 +13,9 @@ console.log("Iniciando cliente MQTT...");
 const clientID = "web-client-" + Math.random().toString(16).substr(2, 8);
 
 // Conectar al broker público de HiveMQ por WebSockets (puerto 8000)
+// !! NOTA: Si tuvieras problemas de conexión, podría ser porque tu
+// !! servidor (https) no deja conectar a un broker (ws).
+// !! Pero un broker público como HiveMQ suele funcionar.
 const mqttClient = new Paho.MQTT.Client("broker.hivemq.com", 8000, clientID);
 
 // Callback para conexión perdida
@@ -28,7 +31,8 @@ mqttClient.onConnectionLost = (responseObject) => {
 mqttClient.onMessageArrived = (message) => {
     console.log("MQTT Mensaje recibido:", message.payloadString);
     if(message.destinationName === "micarrirobot/obstaculos") {
-        // Podríamos actualizar un estado visual aquí si quisiéramos
+        // Aquí puedes notificar al usuario
+        // (La página de monitoreo hará esto)
     }
 };
 
